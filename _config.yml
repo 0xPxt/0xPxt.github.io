@@ -1,6 +1,6 @@
 # Site
-title: 0xPxt
-description: Tinkering with CyberSec
+title:
+descripiton: 0xPxt
 url: https://0xPxt.github.io/
 logo: gengar.gif
 locale: en_US
@@ -33,7 +33,7 @@ sass:
 #google.plus:        username
 #twitter:            username
 #facebook:           username
-#github:             0xPxt
+github:             0xPxt
 #stackoverflow:     123456/username   from a "http://stackoverflow.com/users/123456/username" link
 linkedin:           aleix-raventos-303b32221
 #xing:              username
