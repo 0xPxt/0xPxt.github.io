@@ -1,8 +1,6 @@
-# Buffer overflow 101
+# Buffer overflow Basics
 
-Tags: Unfinished
-
-# Introduction
+## Introduction
 
 Have you ever heard of the term “buffer overflow”? I am sure you have, but do you really understand what goes on in the computer when such thing happens?
 
@@ -16,11 +14,11 @@ But what if I showed you that there is a way of bypassing this security measure 
 
 ![Untitled](../images/Buffer-Overflow-Basics/Untitled%201.png)
 
-What the hell did just happen? Well, if that is your reaction, I’m glad to tell you that you have come to the right place.
+What did just happen? Well, if that is your reaction, I’m glad to tell you that you have come to the right place.
 
 In this article, I will try to clarify, with the behavior of the simplest buffer overflow possible (the one right above), what this technique consists of, how to carry it out and how to mitigate its effects.
 
-# The Stack
+## The Stack
 
 To properly understand any kind of buffer overflow, it is an obligation to know what the stack is and how it works (though for now we only need roughly a high level knowledge of its internals).
 
@@ -62,9 +60,9 @@ This is by no means all of what the stack frame for `foo()` would contain, but f
 
 Do you see that there is an arrow pointing to the top of the stack? Well, the computer will take care of this for us and will store that position in a register called “Stack Pointer”.
 
-This register is named `sp`, but you will find that it is often prefixed with a letter. That letter indicates the amount of bytes that we want to access, but again, don’t worry too much about these details and just remember that `letter + sp → Stack Pointer`.
+This register is named `sp`, but you will find that it is often prefixed with a letter. That letter indicates the amount of bytes that we want to access, but again, don’t worry too much about these details and just remember that `<some letter> + sp → Stack Pointer`.
 
-# Buffer Overflow
+## Buffer Overflow
 
 I can’t describe the concept better than Wikipedia, so here you have their definition :
 
@@ -206,7 +204,9 @@ And finally, we hit the part of the code which makes us gain access to the admin
 
 ![Untitled](../images/Buffer-Overflow-Basics/Untitled%206.png)
 
-# Conclusion
+
+
+## Conclusion
 
 This article is coming to its end, but before finishing it, I want to clarify that the likelihood of finding this kind of buffer overflow is really low, since compilers now take care of adding protections with the aim of preventing this type of flaws. However, I still think it is really interesting to understand the basic principles on which buffer overflows stand. If you grab any old machine and try to exploit a binary this way, you’ll most likely succeed, but it is unrealistic to think that this can happen in a machine of today.
 
