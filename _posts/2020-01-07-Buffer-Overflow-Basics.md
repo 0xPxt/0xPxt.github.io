@@ -50,10 +50,10 @@ Given the following function `foo()` :
 
 ```c
 void foo() {
-		int var1 = 0;
-		int var2 = 0;
-		char god[10];
-		strcpy(god, "0xPxt");
+    int var1 = 0;
+    int var2 = 0;
+    char god[10];
+    strcpy(god, "0xPxt");
 }
 ```
 
@@ -82,10 +82,10 @@ If we write something that is in bounds, the stack would look something like the
 
 ```c
 void foo() {
-		int var1 = 0;
-		int var2 = 0;
-		char god[10];
-		strcpy(god, "0xDEAD");
+    int var1 = 0;
+    int var2 = 0;
+    char god[10];
+    strcpy(god, "0xDEAD");
 }
 ```
 
@@ -95,10 +95,10 @@ However, if we write something that goes past the boundaries of the buffer, our 
 
 ```c
 void foo() {
-		int var1 = 0;
-	  int var2 = 0;
-		char god[10];
-	  strcpy(god, "Some Other Guy");
+    int var1 = 0;
+    int var2 = 0;
+    char god[10];
+    strcpy(god, "Some Other Guy");
 }
 ```
 
@@ -172,8 +172,8 @@ Let’s now see the source code of the program with `list` and add some breakpoi
 
 Once the breakpoints are set, I will execute a couple of GDB commands in order to ease the steps that are to come :
 
-- `set disassembly-flavor intel` →Changes the assembly syntax from AT&T to Intel (this is just personal preference).
-- `layout split` →Provides us with a beautiful layout to see the source code and the assembly throughout the debugging session.
+ * `set disassembly-flavor intel` → Changes the assembly syntax from AT&T to Intel (this is just personal preference).
+ * `layout split` → Provides us with a beautiful layout to see the source code and the assembly throughout the debugging session.
 
 It’s time to run the program, as you can see in the image below, the program breaks (at the first breakpoint) after having specified a password, which in this case was “0xdead”.
 
@@ -181,11 +181,11 @@ By examining the stack and the `is_authenticated` flag, we see that everything s
 
 ---
 
-`x/32wx $esp` displays the 32 words that are after the stack pointer.
+`x/32wx $esp` displays the 32 words that are after the stack pointer.<br>
 `x/wx &is_authenticaded` displays the value of the flag and its address.
 
 ---
-
+<br>
 
 ![0xdead_gdb.jpg](../images/Buffer-Overflow-Basics/0xdead_gdb.jpg)
 
