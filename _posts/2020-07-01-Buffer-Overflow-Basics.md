@@ -140,9 +140,10 @@ As the comment points out, there is a `scanf()` which will write to the `buffer`
 
 ---
 
-❔ Side note : If the program expected the flag to be exactly 1, we could modify our input to overwrite the flag with exactly that value, but it was not necessary this time.<br>
+❔ Side note : If the program expected the flag to be exactly 1, we could modify our input to overwrite the flag with exactly that value, but it was not necessary this time.
 
 ---
+
 
 Future examples will be more fun and complicated than this one, but it is essential to understand the basics in order to learn progressively without shooting ourselves in the foot.
 
@@ -172,10 +173,12 @@ It’s time to run the program, as you can see in the image below, the program b
 By examining the stack and the `is_authenticated` flag, we see that everything seems to be in order.
 
 ---
+
 `x/32wx $esp` displays the 32 words that are after the stack pointer.
-`x/wx &is_authenticaded` displays the value of the flag and its address.<br>
+`x/wx &is_authenticaded` displays the value of the flag and its address.
 
 ---
+
 
 ![0xdead_gdb.jpg](../images/Buffer-Overflow-Basics/0xdead_gdb.jpg)
 
