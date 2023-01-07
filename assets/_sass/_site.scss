@@ -7,8 +7,13 @@
 }
 
 .block-right {
+  width: 70%;
   float: right;
   overflow-y: auto;
+}
+
+.block-left {
+  width: 30%;
 }
 
 .block-left,
@@ -439,7 +444,7 @@ canvas {
 
 #posts {
   .block-right {
-    width: 70%;
+    width: 95%;
     display: block;
     .content {
       height: auto;
