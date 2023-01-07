@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "Buffer Overflow Basics"
+date:   2023-01-07
+excerpt: "Article to dive into Buffer Overflow 101"
+---
+
 # Buffer Overflow Basics
 
 ## Introduction
