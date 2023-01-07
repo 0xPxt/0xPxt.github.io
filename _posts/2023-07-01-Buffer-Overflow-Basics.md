@@ -1,4 +1,4 @@
-# Buffer overflow Basics
+# Buffer Overflow Basics
 
 ## Introduction
 
