@@ -1,5 +1,6 @@
 .block-left {
   float: left;
+  width: 30%;
   .content {
     z-index: 1;
     position: relative;
@@ -13,7 +14,6 @@
 
 .block-left,
 .block-right {
-  width: 50%;
   height: 100%;
   position: relative;
   display: table;
@@ -440,6 +440,7 @@ canvas {
 
 #posts {
   .block-right {
+    width: 30%;
     display: block;
     .content {
       height: auto;
