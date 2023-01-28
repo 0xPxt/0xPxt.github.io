@@ -8,8 +8,6 @@ excerpt: "Editing the memory of a video game to gain unfair advantage 👾"
 
 # Memory editing : Gaining infinite health and ammo
 
-Tags: Next, Ongoing
-
 ## Introduction
 
 Greetings! Welcome to my very first game hacking post. Allow me to confess that I am really excited to be writing about this topic because it is something I have always been curious about since I started playing video games. Everyone has tried to cheat on some game at least once, right? No matter whether it was about leveling up faster, becoming immortal or gaining infinite gold (shame on you if you couldn’t stop spamming `motherlode` while playing The Sims and shame on you for playing The Sims), there are games in which cheating makes the game better.
