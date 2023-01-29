@@ -58,30 +58,24 @@ Obviously, this won’t be the plan. As you can observe, there is a `Next Scan` 
 
 ![Untitled](../images/MemoryEditing/Untitled%202.png)
 
-![Untitled](../images/MemoryEditing/Untitled%203.png)
-
-Here’s what happened, I took a bit of a suicidal move and grabbed a grenade and threw it to my foot, and then I clicked the `Next Scan` button and specified the value 40. There we go now, only 2 results, now brute forcing looks like a plan, doesn’t it?
+Here’s what happened, I took a bit of a suicidal move and grabbed a grenade and threw it to my foot, and then I clicked the `Next Scan` button and specified the value 38. There we go now, only 2 results, now brute forcing looks like a plan, doesn’t it?
 
 The next step is simply double clicking the first address, and it will be moved to our saved addresses box (the big one down below) and from there, we can modify the value that the address is pointing to.
 
-![Untitled](../images/MemoryEditing/Untitled%204.png)
-
-![Untitled](../images/MemoryEditing/Untitled%205.png)
+![Untitled](../images/MemoryEditing/Untitled%203.png)
 
 Good! Now I can throw myself 20 grenades, which is what everyone plays games for.
 
 Let’s repeat the same steps but for the ammo :
 
 1. Click on the `New Scan` button
-2. Scan for the amount of ammo you currently have (19 in my case)
+2. Scan for the value 20
 3. Shoot a couple of times
 4. Re-scan for the new value with `Next Scan`
 5. Go back to 3 until there are only few results
 6. Edit the value and watch the ammo grow
 
-![Untitled](../images/MemoryEditing/Untitled%206.png)
-
-![Untitled](../images/MemoryEditing/Untitled%207.png)
+![Untitled](../images/MemoryEditing/Untitled%204.png)
 
 Does anyone want to 1v1 me now? My aim is pretty bad but I am sure I can handle that 😎.
 
@@ -95,29 +89,29 @@ It may seem evident to you that when you take damage in a game, it happens becau
 
 In order to accomplish this, we can right-click on one of the addresses and a menu will show up, we need to select there the option `Find out what writes to this address`. This will scan the binary (the game executable) and it will search for the code that modifies the value pointed by the address we are interested in.
 
-![Untitled](../images/MemoryEditing/Untitled%208.png)
+![Untitled](../images/MemoryEditing/Untitled%205.png)
 
-When we click on this option, we will see the instructions that modify the value in the address, but **we first need to shoot in order to make the value change** (the scanner will look for something that modifies the value, so we need to modify it in order for the scanner to find it) :
+When we click on this option, we will see the instructions that modify the value in the address, but we first need to shoot in order to make the value change :
 
-![Untitled](../images/MemoryEditing/Untitled%209.png)
+![Untitled](../images/MemoryEditing/Untitled%206.png)
 
 As the image shows, there is an instruction in address `0x004C73EF` that decrements whatever is in the `eax` register. 
 
 By double clicking the line 1, we get to see some more info about the assembly code, such as the registers’ state at that point, the instructions that come before and after the one we are looking for, and a couple extra options to see the stack’s view and the floating point registers (`S` and `F`).
 
-![Untitled](../images/MemoryEditing/Untitled%2010.png)
+![Untitled](../images/MemoryEditing/Untitled%207.png)
 
 By double clicking once again on the decrement instruction, we get to see the whole assembly code, and we can modify it how we want.
 
 A quick look into [Intel® 64 and IA-32 Architectures Software Developer’s Manuals](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html) will reveal that the `dec` function decrements its operand by 1 :
 
-![Untitled](../images/MemoryEditing/Untitled%2011.png)
+![Untitled](../images/MemoryEditing/Untitled%208.png)
 
 As I mentioned, we will substitute the `dec` operation with a `nop` operation, which tells the processor to do absolutely nothing. This technique is known as freezing, since the value will now be unable to change (technically it can still increase but you know what I meant).
 
-![Untitled](../images/MemoryEditing/Untitled%2012.png)
+![Untitled](../images/MemoryEditing/Untitled%209.png)
 
-![Untitled](../images/MemoryEditing/Untitled%2013.png)
+![Untitled](../images/MemoryEditing/Untitled%2010.png)
 
 We need 2 `NOP` because the decrement instruction occupies 2 bytes and we need to add the padding.
 
