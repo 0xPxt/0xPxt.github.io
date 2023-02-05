@@ -45,7 +45,7 @@ There are a bunch of disassemblers, each with its pros and cons, but arguably th
 
 ## PoC : Reversing a Binary
 
-As explained sooner, to look at the disassembly of a binary we dispose of a wide variety of options. I will use `objdump` because I think it’s the tool that adds less noise and that will provide a clear view of what we are interested in today, which is working our way through the raw disassembly. However, in more complex analysis, a powerful disassembler can safe you hours and hours of pain.
+As explained sooner, to look at the disassembly of a binary we dispose of a wide variety of options. I will use `objdump` because I think it’s the tool that adds less noise and that will provide a clear view of what we are interested in today, which is working our way through the raw disassembly. However, in more complex analysis, a powerful disassembler can save you hours and hours of pain.
 
 The disassembly of our binary is the following code :
 
