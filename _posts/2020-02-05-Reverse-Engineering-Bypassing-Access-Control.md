@@ -171,7 +171,7 @@ Once again, I hope you have enjoyed and learnt something, and I highly encourage
 
 ### Resources
 
-The Ghidra Book : The Definitive Guide, Chris Eagle and Kara Nance.
-[Reverse Engineering for Begginers](https://www.beginners.re/)
-[https://crackmes.one/](https://crackmes.one/)
+The Ghidra Book : The Definitive Guide, Chris Eagle and Kara Nance.<br>
+[Reverse Engineering for Begginers](https://www.beginners.re/)<br>
+[https://crackmes.one/](https://crackmes.one/)<br>
 [Wikibooks - Disassemblers and Decompilers](https://www.notion.so/Reverse-Engineering-Bypassing-Access-Control-8ebce6a349ec414cafbf7af7b48214c5)
