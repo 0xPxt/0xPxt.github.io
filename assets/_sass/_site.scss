@@ -112,7 +112,7 @@ canvas {
   right: 90px;
   width: 20px;
   height: 25px;
-  border: 2px solid $gray;
+  border: 2px solid darken($gray, 40);
   background: $white;
   &:before {
     content: '';
