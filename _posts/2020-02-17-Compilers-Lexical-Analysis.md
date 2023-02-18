@@ -43,8 +43,8 @@ Let’s throw out some definitions before stepping forward any longer :
 
 | Term | Description |
 | --- | --- |
-| Token (Lexical component) | A lexical token is a sequence of characters that can be treated as a unit in the grammar of the programming languages. A token can be viewed as a “class” for a lexeme. This means that for example, the lexeme == corresponds to a “relation” token. |
-| Lexeme | It is the instance of a token. The lexeme is the sequence of characters from the source code with which the pattern for a token matches. Consider the patter for a “relation” token to be something like < or <= or == or <> or >= or >, then the sequence <= would be a lexeme that corresponds to the “relation” token. |
+| Token (Lexical component) | A lexical token is a sequence of characters that can be treated as a unit in the grammar of the programming languages. A token can be viewed as a “class” for a lexeme. This means that for example, the lexeme `==` corresponds to a “relation” token. |
+| Lexeme | It is the instance of a token. The lexeme is the sequence of characters from the source code with which the pattern for a token matches. Consider the patter for a “relation” token to be something like `<` or `<=` or `==` or `<>` or `>=` or `>`, then the sequence `<=` would be a lexeme that corresponds to the “relation” token. |
 | Pattern | A pattern is a set of rules a scanner follows to match a lexeme in the input program to identify a valid token. It is like the lexical analyzer's description of a token to validate a lexeme. Patterns are implemented through https://en.wikipedia.org/wiki/Deterministic_finite_automaton, which consist in a state diagram. If the string reaches the end of the diagram, it is consider valid. But don’t worry about this last sentence, we will have a closer look soon.  |
 
 To put it in simple terms, an input string (the source code) is fed to the compiler, which uses patterns to try and find matches in the code. The matches that are found are called lexemes, and these lexemes are the concrete instance of what is called a token.
