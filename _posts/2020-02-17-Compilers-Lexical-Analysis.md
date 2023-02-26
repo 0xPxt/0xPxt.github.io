@@ -23,6 +23,7 @@ Let’s provide some definitions :
 - Source code → It is the code that is written in a high level language, and it has some features to improve human readability, such as comments, naming, etc. It is very close to the human language and thus it eases the task of coding for us humans.
 - Object code → If you can read this, you should get some light because you have not left your room in a while. Just kidding (not really), object code is the program that is written in machine code (binary) and it is [the product of a compiler](https://en.wikipedia.org/wiki/Object_code).
 
+
 ![Untitled](../images/Compilers_Syntax/Untitled.png)
 
 ### What steps constitute the compilation process?
