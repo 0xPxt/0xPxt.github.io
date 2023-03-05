@@ -3,7 +3,7 @@ layout: post
 title:  "Memory editing : Gaining infinite health and ammo"
 date:   2023-01-28
 image:  ../images/MemoryEditing/MemoryEditing.gif
-excerpt: "Editing the memory of a video game to gain unfair advantage 👾"
+excerpt: "Gainining unfair advantage in a game 👾 "
 ---
 
 # Memory editing : Gaining infinite health and ammo
