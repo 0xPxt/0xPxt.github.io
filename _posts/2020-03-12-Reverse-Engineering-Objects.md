@@ -56,9 +56,9 @@ The number `0xDEAD` is assigned to the `num` attribute of `MyObject` in line 7. 
 
 As far as the `“Hey!”` string regards, I think it is fairly easy to see that it is stored somewhere in memory (compiler explorer uses the label `.L.str` to improve readability but you will see a different region if you compile this locally on your machine) and it is stored in the local variables in lines 11 (for the object) and 13 (for the struct) of the ARM assembly code.
 
-## Use of the _this_ pointer
+## Use of the <em>this</em> pointer
 
-As I promised, I will now explain one of the techniques that we can utilize in order to find out if we are dealing with an object. I am sure you are well aware of how the _this_ pointer is used inside an object’s function to access the object’s attributes or methods, but do you know how that use is translated to assembly code? 
+As I promised, I will now explain one of the techniques that we can utilize in order to find out if we are dealing with an object. I am sure you are well aware of how the <em>this</em> pointer is used inside an object’s function to access the object’s attributes or methods, but do you know how that use is translated to assembly code? 
 
 To my eyes, there is such a cool thing that happens : <u>The compiler implicitly passes an argument to the function, without the programmer telling it to do so.</u>
 
@@ -136,7 +136,7 @@ Moreover, we know the object has an attribute that is an `int` because of the `D
 
 To put it all in a nutshell, detecting the apparition of an object in source code by just looking at the disassembly is a possible thing to do, however, it can sometimes be a little bit tricky and we need to really understand what the compiler does and pay close attention to the details.
 
-I haven’t talked about *vtables* in this post, which is another way of detecting objects but it is a method that’s a little more advanced and the post has gotten long enough, but don’t worry, I will explain them in the future. 
+I haven’t talked about <em>vtables</em> in this post, which is another way of detecting objects but it is a method that’s a little more advanced and the post has gotten long enough, but don’t worry, I will explain them in the future. 
 
 You can always do the research yourselves though (But I know it is cooler to read me explaining it 😉)!
 
