@@ -56,9 +56,9 @@ The number `0xDEAD` is assigned to the `num` attribute of `MyObject` in line 7. 
 
 As far as the `“Hey!”` string regards, I think it is fairly easy to see that it is stored somewhere in memory (compiler explorer uses the label `.L.str` to improve readability but you will see a different region if you compile this locally on your machine) and it is stored in the local variables in lines 11 (for the object) and 13 (for the struct) of the ARM assembly code.
 
-## Use of the *this* pointer
+## Use of the _this_ pointer
 
-As I promised, I will now explain one of the techniques that we can utilize in order to find out if we are dealing with an object. I am sure you are well aware of how the *this* pointer is used inside an object’s function to access the object’s attributes or methods, but do you know how that use is translated to assembly code? 
+As I promised, I will now explain one of the techniques that we can utilize in order to find out if we are dealing with an object. I am sure you are well aware of how the _this_ pointer is used inside an object’s function to access the object’s attributes or methods, but do you know how that use is translated to assembly code? 
 
 To my eyes, there is such a cool thing that happens : <u>The compiler implicitly passes an argument to the function, without the programmer telling it to do so.</u>
 
