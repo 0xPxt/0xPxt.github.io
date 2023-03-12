@@ -8,7 +8,7 @@ excerpt: "Revealing the existence of objects through RE 📦"
 
 ## Introduction
 
-Greetings fellow readers! (I don’t even know how much people read this because I do not track the stats). Today we will be seeing some assembly code regarding the use of objects in C++. And what is more, we will learn how to grasp if there is an object in the source code just by looking at the assembly.
+Greetings fellow readers! (I don’t even know how much people read this because I do not track the stats). Today we will be seeing some assembly code regarding the use of objects in C++. And what is more, we will learn how to grasp if there is an object in the source code just by looking at the disassembly.
 
 Firstly, I will show you the differences and similarities that exist in the object code when we are dealing with structures and objects, and then we will talk about an object’s constructor as a way of unmistakably detecting the existence of an object.
 
@@ -58,9 +58,9 @@ As far as the `“Hey!”` string regards, I think it is fairly easy to see that
 
 ## Use of the *this* pointer
 
-As I promised, I will now explain one of the techniques that we can utilize in order to find out if we are dealing with an object. I am sure you are well aware of how the ****this**** pointer is used inside an object’s function to access the object’s attributes or methods, but do you know how that use is translated to assembly code? 
+As I promised, I will now explain one of the techniques that we can utilize in order to find out if we are dealing with an object. I am sure you are well aware of how the *this* pointer is used inside an object’s function to access the object’s attributes or methods, but do you know how that use is translated to assembly code? 
 
-To my eyes, there is such a cool thing that happens : The compiler implicitly passes an argument to the function, without the programmer telling it to do so. 
+To my eyes, there is such a cool thing that happens : <u>The compiler implicitly passes an argument to the function, without the programmer telling it to do so.</u>
 
 Anytime you see that an argument is passed to a function (we are dealing with 32 bit architectures so the arguments are passed on the stack) and then that argument is used as the pointer from where to reference other variables or functions, you are **probably (we’ll see why)** dealing with an object.
 
@@ -92,7 +92,7 @@ As you can see once again, when branching into `foo()` in line 23, the `sub` ins
 
 In ARM, `r11` is the **base pointer**, so what is happening in here is that we are storing in `r0` the address of the pointer to `mo` (and you can verify this by looking at line 16, which shows how `r11 - 0x12` is where `mo.num` is located).
 
-Once arrived at this point, I have to admit that there is something that I have been hiding from you. This is not a trustworthy method to detect if we are dealing with an object. It would be reliable if we had the source code available, but the truth is we probably won’t in real life.
+Once arrived at this point, I have to admit that there is something that I have been hiding from you. <u>This is not a trustworthy method to detect if we are dealing with an object.</u> It would be reliable if we had the source code available, but the truth is we probably won’t in real life.
 
 The method is flawed because it assumes that the function that is called is not expecting any argument, but what if that argument is a struct?
 
@@ -122,7 +122,7 @@ And this one the disassembly of the constructor :
 
 By now you may be wondering how on Earth do we know where the call to the constructor happens and how do we know that function is the constructor, and I’ll give you that, it easy somewhat tricky to spot.
 
-By using the keyword `new`, the compiler reserves some memory and returns a pointer (in `eax`) to that reserved memory. 
+By using the keyword `new`, <u>the compiler reserves some memory and returns a pointer (in `eax`) to that reserved memory.</u>
 
 If you look at line 24, that is the use of `new`. How do I know that? Because in line 26 `eax` is moved to `ebx`, and then `ebx` is pushed to the stack in line 28. This means that right before the call in line 29, we have the pointer to the block of memory allocated by `new` on top of the stack.
 
