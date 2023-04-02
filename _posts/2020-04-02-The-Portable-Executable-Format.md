@@ -182,7 +182,7 @@ typedef struct _IMAGE_DATA_DIRECTORY {
 } IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;
 ```
 
-Each section is identified through an address and a size, and these are the sections that are contained withing the Data Directory :
+Each section is identified through an address and a size, and these are the sections that are contained within the Data Directory :
 
 ![Untitled](../images/PE/Untitled%204.png)
 
