@@ -1,5 +1,5 @@
 ---
-layout: post
+nlayout: post
 title:  "Win32 Hardcoded Shellcode"
 date:   2023-04-12
 image:  ../images/Win32_HC_SC/win32.gif
@@ -91,7 +91,7 @@ push 0x636c6163       ; "calc"
 mov  eax, esp         ; save pointer to "calc.exe" string in eax
 
 ; WinExec
-inc  ebx              ; WinExec()'s 2nd argument set to 0x01
+inc  ebx              ; WinExec() 2nd argument set to 0x01
 push ebx              ; push the argument to stack
 push eax              ; push "calc.exe"
 mov  ebx, 0x7674E120  ; move &WinExec to ebx
