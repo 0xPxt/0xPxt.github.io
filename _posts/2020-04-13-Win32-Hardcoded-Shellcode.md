@@ -3,7 +3,7 @@ layout: post
 title:  "Win32 Hardcoded Shellcode"
 date:   2023-04-12
 image:  ../images/Win32_HC_SC/win32.gif
-    excerpt: "Shellcoding the ugly way 👹"
+excerpt: "Shellcoding the ugly way 👹"
 ---
 
 # Win32 Hardcoded Shellcode
