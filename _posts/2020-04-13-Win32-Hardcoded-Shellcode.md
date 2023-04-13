@@ -24,7 +24,7 @@ Our shellcode will be expressed in hexadecimal, but we can write it in C, then c
 
 Let’s get our hands dirty, first we can code up a super simple program which will call the Windows API to execute the notepad :
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled.png)
+![Untitled](../images/Win32_HC_SC/Untitled.png)
 
 You really don’t have to be a genius to understand what `WinExec` and `ExitProcess` do, but here is the documentation just in case you want to check those out :
 
@@ -40,7 +40,7 @@ i686-w64-mingw32-gcc exec_calc_win.c -o exec_calc_win.exe
 
 If I move that to my Windows 10 VM and execute it …
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%201.png)
+![Untitled](../images/Win32_HC_SC/Untitled%201.png)
 
 I promise it works, I did not open `calc.exe` by double clicking…
 
@@ -50,27 +50,27 @@ Be patient young rusher, that is the next point we are going to cover.
 
 By opening up the binary with a hex editor, we can see the raw bytes that the file consists of. 
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%202.png)
+![Untitled](../images/Win32_HC_SC/Untitled%202.png)
 
 I am using HxD on my Windows VM, but feel free to use any of your liking.
 
 From here, we can either parse the PE file and find the .text section (see [the previous post](https://0xpxt.github.io//The-Portable-Executable-Format/)) which contains the code, or we can be a little more practical and throw the binary into a disassembler, which will tell us where the instructions begin :
 
-![Untitled.png](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%203.png)
+![Untitled.png](../images/Win32_HC_SC/Untitled%203.png)
 
 As we can see, the program’s main starts at address 0x00401530, let’s find out where it ends :
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%204.png)
+![Untitled](../images/Win32_HC_SC/Untitled%204.png)
 
 Looks like we can get all these bytes now from our hex editor!
 
 Let’s just find them with a search command (Ctrl+F in HxD).
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%205.png)
+![Untitled](../images/Win32_HC_SC/Untitled%205.png)
 
 And here we get the result. We know we need the bytes from `8D 4C 24` to `90 90 90`, so let’s just copy them :
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%206.png)
+![Untitled](../images/Win32_HC_SC/Untitled%206.png)
 
 ```bash
 8D 4C 24 04 83 E4 F0 FF 71 FC 55 89 E5 51 83 EC 14 E8 CA 00 00 00 C7 44 24 04 00 00 00 00 C7 04 24 00 40 40 00 A1 48 61 40 00 FF D0 83 EC 08 C7 04 24 00 00 00 00 A1 00 61 40 00 FF D0 90 90 90
@@ -106,11 +106,11 @@ jmp  eax              ; jump to it
 
 Your question here should be : How the hell do we know `WinExec`'s address? Well, just run this program :
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%207.png)
+![Untitled](../images/Win32_HC_SC/Untitled%207.png)
 
 Isn’t it easy? 😉
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%208.png)
+![Untitled](../images/Win32_HC_SC/Untitled%208.png)
 
 You can do the same for `ExitProcess`.
 
@@ -151,11 +151,11 @@ jmp  eax              ; jump to it
 
 Let’s check the bytes we are looking for :
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%209.png)
+![Untitled](../images/Win32_HC_SC/Untitled%209.png)
 
 Which once again I will copy from HxD :
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%2010.png)
+![Untitled](../images/Win32_HC_SC/Untitled%2010.png)
 
 ```bash
 31 DB 53 68 2E 65 78 65 68 63 61 6C 63 89 E0 43 53 50 BB 20 E1 74 76 FF D3 31 C0 50 B8 B0 58 71 76 FF E0
@@ -169,7 +169,7 @@ Now the really cool stuff happens. We will exploit a basic buffer overflow and o
 
 The vulnerable code that I will be using is a slightly modified exercise I have got from [this wonderful free course](http://ricardonarvaja.info/WEB/EXPLOITING%20Y%20REVERSING%20USANDO%20HERRAMIENTAS%20FREE/) (Please check it out, I guarantee you will not be disappointed) :
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%2011.png)
+![Untitled](../images/Win32_HC_SC/Untitled%2011.png)
 
 Since the goal of this post is to show how we can execute our shellcode I will not be covering how I am overwriting the return address, but any quick search on that will find you what you want.
 
@@ -204,7 +204,7 @@ What is happening in here is that we have overflown the buffer by filling it wit
 
 This essentially means that when `f` returns, our payload will be executed :
 
-![Untitled](Win32%20Hardcoded%20Shellcode%208c431330619e421ba80f3f998b551f50/Untitled%2012.png)
+![Untitled](../images/Win32_HC_SC/Untitled%2012.png)
 
 ## Conclusion
 
