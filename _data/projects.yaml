@@ -1,7 +1,7 @@
-#- title: Halve Jekyll Theme
-#url: http://taylantatli.me/Halve
-#image: http://taylantatli.me/Halve/images/halve-home-image.png
-#completed: false
+- title: 0xSniffer
+url: https://github.com/0xPxt/0xSniffer
+image: https://github.com/0xPxt/0xPxt.github.io/blob/master/images/0xSniffer/0xSniffer.png
+completed: true
 
 #- title: Moon Jekyll Theme
 #url: http://taylantatli.me/Moon
