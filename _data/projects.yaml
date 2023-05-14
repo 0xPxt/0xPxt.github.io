@@ -1,7 +1,7 @@
 - title: 0xSniffer
-url: https://github.com/0xPxt/0xSniffer
-image: ../images/0xSniffer/0xSniffer.png
-completed: true
+  url: https://github.com/0xPxt/0xSniffer
+  image: ../images/0xSniffer/0xSniffer.png
+  completed: true
 
 #- title: Moon Jekyll Theme
 #url: http://taylantatli.me/Moon
