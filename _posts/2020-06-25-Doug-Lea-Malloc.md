@@ -76,16 +76,13 @@ I am obviously doing this because there are some posts about heap exploitation c
 
 Let’s throw out some definitions first, and afterwards it will be clear why we need them :
 
-| Heap | The heap is a large area of memory available for use by the program.
+ * Heap --> The heap is a large area of memory available for use by the program.
 The program can request areas, or “blocks”, of memory for its use
-within the heap.
-In order to allocate a block of some size, the program makes an
-explicit request by calling the heap allocation operation. |
-| --- | --- |
-| Chunk | A small range of memory that can be allocated, freed, or combined with adjacent chunks into larger ranges.
-Chunks of memory carry around with them size information fields both before and after the chunk, typically referred to as meta-data. |
-| Bin | Available chunks are maintained in bins, grouped by size.
-In other words, a bin is a collection of free chunks. |
+within the heap. In order to allocate a block of some size, the program makes an
+explicit request by calling the heap allocation operation.
+ * Chunk --> A small range of memory that can be allocated, freed, or combined with adjacent chunks into larger ranges.
+Chunks of memory carry around with them size information fields both before and after the chunk, typically referred to as meta-data.
+ * Bin --> Available chunks are maintained in bins, grouped by size. In other words, a bin is a collection of free chunks.
 
 Only by reading this definitions, you can start to imagine how the memory allocator will work.
 
@@ -117,20 +114,20 @@ The definitions for `brk` and `sbrk` given by the manpages are the following :
 
 ```
 brk() and sbrk() change the location of the program break, which
-defines the end of the process's data segment (i.e., the program
-break is the first location after the end of the uninitialized
-data segment).  Increasing the program break has the effect of
-allocating memory to the process; decreasing the break
-deallocates memory.
+    defines the end of the process's data segment (i.e., the program
+    break is the first location after the end of the uninitialized
+    data segment).  Increasing the program break has the effect of
+    allocating memory to the process; decreasing the break
+    deallocates memory.
 
 brk() sets the end of the data segment to the value specified by
-addr, when that value is reasonable, the system has enough
-memory, and the process does not exceed its maximum data size
-(see setrlimit(2)).
+    addr, when that value is reasonable, the system has enough
+    memory, and the process does not exceed its maximum data size
+    (see setrlimit(2)).
 
 sbrk() increments the program's data space by increment bytes.
-Calling sbrk() with an increment of 0 can be used to find the
-current location of the program break.
+    Calling sbrk() with an increment of 0 can be used to find the
+    current location of the program break.
 ```
 
 Long story short, resizing the heap is as easy as telling the kernel to adjust the program break.
