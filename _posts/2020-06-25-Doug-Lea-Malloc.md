@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Solving CTFs with angr"
+title:  "Doug Lea's malloc (Linux Heap)"
 date:   2023-06-12
 image:  ../images/DLMalloc/DLMalloc.gif
 excerpt: "Exploring dynamic memory allocaiton in Linux 💽"
